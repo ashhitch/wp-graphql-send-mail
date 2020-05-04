@@ -8,7 +8,7 @@
  * Author URI:      https://www.ashleyhitchcock.com
  * Text Domain:     wp-graphql-send-mail
  * Domain Path:     /languages
- * Version:         0.0.1
+ * Version:         0.0.2
  *
  * @package         WP_Graphql_SEND_MAIL
  */
@@ -20,7 +20,7 @@ add_action('admin_init', 'wpgraphql_send_mail_settings_init');
 
 function wpgraphql_send_mail_add_admin_menu()
 {
-  add_options_page('WpGraphQl Send Mail Settings', 'WpGraphQl Mail', 'manage_options', 'wpgraphql-send-mail-page', 'wpgraphql_send_mail_options_page');
+  add_options_page('WPGraphQL Send Mail Settings', 'WPGraphQL Mail', 'manage_options', 'wpgraphql-send-mail-page', 'wpgraphql_send_mail_options_page');
 }
 
 function wpgraphql_send_mail_settings_init()

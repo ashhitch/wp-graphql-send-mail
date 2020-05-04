@@ -1,6 +1,6 @@
-# WPGraphQl Send Email Plugin
+# WPGraphQL Send Email Plugin
 
-One of the simple things about a traditional WordPress sites is sending emails, this plugin makes it easy to do this via a simple mutation when you are using WpGraphQl.
+One of the simple things about a traditional WordPress sites is sending emails, this plugin makes it easy to do this via a simple mutation when you are using WPGraphQL.
 
 ## Usage
 
@@ -24,7 +24,7 @@ mutation SEND_EMAIL {
 
 To try stop unauthorised emails you can set a list of domains that can send emails through the mutation.
 
-These are set under `Settings > WpGraphQl Mail` from your WordPress Admin
+These are set under `Settings > WPGraphQL Mail` from your WordPress Admin
 
 ## Support
 
@@ -32,4 +32,4 @@ These are set under `Settings > WpGraphQl Mail` from your WordPress Admin
 
 ## Other Plugins
 
-Want to get Yoast data via WpGraphQl? [Checkout my other plugin](https://github.com/ashhitch/wp-graphql-yoast-seo)
+Want to get Yoast data via WPGraphQL? [Checkout my other plugin](https://github.com/ashhitch/wp-graphql-yoast-seo)
