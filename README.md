@@ -2,6 +2,12 @@
 
 One of the simple things about a traditional WordPress sites is sending emails, this plugin makes it easy to do this via a simple mutation when you are using WPGraphQL.
 
+## Composer
+
+```
+composer require ashhitch/wp-graphql-send-mail
+```
+
 ## Usage
 
 ```
