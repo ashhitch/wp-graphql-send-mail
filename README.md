@@ -1,5 +1,7 @@
 # WPGraphQL Send Email Plugin
 
+![WPGraphQl Yoast SEO Plugin](./banner.png)
+
 One of the simple things about a traditional WordPress sites is sending emails, this plugin makes it easy to do this via a simple mutation when you are using WPGraphQL.
 
 ## Composer
@@ -39,3 +41,5 @@ These are set under `Settings > WPGraphQL Mail` from your WordPress Admin
 ## Other Plugins
 
 Want to get Yoast data via WPGraphQL? [Checkout my other plugin](https://github.com/ashhitch/wp-graphql-yoast-seo)
+
+Mail Icon by [Good Ware](https://www.flaticon.com/authors/good-ware)
