@@ -38,7 +38,7 @@ These are set under `Settings > WPGraphQL Mail` from your WordPress Admin
 
 [Open an issue](https://github.com/ashhitch/wp-graphql-send-mail/issues)
 
-## Other Plugins
+## Other WpGraphQl Plugins
 
 Want to get Yoast data via WPGraphQL? [Checkout my other plugin](https://github.com/ashhitch/wp-graphql-yoast-seo)
 
