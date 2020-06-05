@@ -19,6 +19,7 @@ mutation SEND_EMAIL {
       to: "test@test.com"
       subject: "test email"
       body: "test email"
+      clientMutationId: "test"
     }
   ) {
     origin
