@@ -8,7 +8,7 @@
  * Author URI:      https://www.ashleyhitchcock.com
  * Text Domain:     wp-graphql-send-mail
  * Domain Path:     /languages
- * Version:         0.0.2
+ * Version:         1.0.0
  *
  * @package         WP_Graphql_SEND_MAIL
  */
@@ -40,20 +40,54 @@ function wpgraphql_send_mail_settings_init()
     'wsmPlugin',
     'wpgraphql_send_mail_wsmPlugin_section'
   );
+
+  add_settings_field(
+    'wpgraphql_send_mail_cc',
+    __('CC address', 'wp-graphql-send-mail'),
+    'wpgraphql_send_mail_cc_render',
+    'wsmPlugin',
+    'wpgraphql_send_mail_wsmPlugin_section'
+  );
+
+  add_settings_field(
+    'wpgraphql_send_mail_from',
+    __('Default From address', 'wp-graphql-send-mail'),
+    'wpgraphql_send_mail_from_render',
+    'wsmPlugin',
+    'wpgraphql_send_mail_wsmPlugin_section'
+  );
 }
 
 function wpgraphql_send_mail_origins_textarea_render()
 {
   $options = get_option('wpgraphql_send_mail_settings');
 ?>
-  <textarea rows="6" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_allowed_origins]'><?php echo $options['wpgraphql_send_mail_allowed_origins']; ?></textarea>
+  <textarea rows="6" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_allowed_origins]'>
+    <?php echo isset($options['wpgraphql_send_mail_allowed_origins']) ? trim($options['wpgraphql_send_mail_allowed_origins']) : ''; ?>
+  </textarea>
+<?php
+}
+
+function wpgraphql_send_mail_cc_render()
+{
+  $options = get_option('wpgraphql_send_mail_settings');
+?>
+  <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_cc]' value="<?php echo isset($options['wpgraphql_send_mail_cc']) ? trim($options['wpgraphql_send_mail_cc']) : ''; ?>" />
+<?php
+}
+
+function wpgraphql_send_mail_from_render()
+{
+  $options = get_option('wpgraphql_send_mail_settings');
+?>
+  <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_from]' value="<?php echo isset($options['wpgraphql_send_mail_from']) ? trim($options['wpgraphql_send_mail_from']) : ''; ?>" />
 <?php
 }
 
 
 function wpgraphql_send_mail_settings_section_callback()
 {
-  echo __('Enter a comma separated list of domains that can sent emails.', 'wp-graphql-send-mail');
+  echo __('Enter a comma separated list of domains that can send emails, remembering to include the protocol e.g. https://wordpress.com', 'wp-graphql-send-mail');
 }
 
 function wpgraphql_send_mail_options_page()
@@ -88,6 +122,10 @@ add_action('graphql_register_types', function () {
       'to' => [
         'type' => 'String',
         'description' => __('Who to send the email to', 'wp-graphql-send-mail'),
+      ],
+      'from' => [
+        'type' => 'String',
+        'description' => __('Who to send the email from', 'wp-graphql-send-mail'),
       ],
       'subject' => [
         'type' => 'String',
@@ -133,9 +171,12 @@ add_action('graphql_register_types', function () {
       // Do any logic here to sanitize the input, check user capabilities, etc
       $options = get_option('wpgraphql_send_mail_settings');
       $allowedOrigins = array_map('trim', explode(',', $options['wpgraphql_send_mail_allowed_origins']));
-      $http_origin = $_SERVER['HTTP_ORIGIN'];
+      $cc = trim($options['wpgraphql_send_mail_cc']);
+      $defaultFrom = trim($options['wpgraphql_send_mail_from']);
+      $http_origin = trim($_SERVER['HTTP_ORIGIN']);
       $message = null;
       $canSend = false;
+
 
       if ($allowedOrigins) {
         if (in_array($http_origin, $allowedOrigins)) {
@@ -150,18 +191,30 @@ add_action('graphql_register_types', function () {
 
       if ($canSend && !empty($input['to']) && !empty($input['body'])) {
 
-
-        $to = $input['to'];
-        $subject = $input['subject'];
+        $to = trim($input['to']);
+        $subject = trim($input['subject']);
         $body = $input['body'];
+        $from = trim($input['from']);
         $headers = array('Content-Type: text/html; charset=UTF-8');
 
+        if (isset($cc)) {
+          $headers[] = 'Cc: ' . $cc;
+        }
+
+        if (isset($from)) {
+          $headers[] = 'From: ' . $from;
+        } else if (isset($defaultFrom)) {
+          $headers[] = 'From: ' . $defaultFrom;
+        }
+
         $sent = wp_mail($to, $subject, $body, $headers);
+
         $message = $sent ? __('Email Sent', 'wp-graphql-send-mail') : __('Email Not Sent', 'wp-graphql-send-mail');
       } else {
         $sent = false;
         $message =  $message ? $message : __('Email Not Sent', 'wp-graphql-send-mail');
       }
+
       return [
         'sent' => $sent,
         'origin' => $http_origin,

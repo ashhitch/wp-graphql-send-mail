@@ -4,6 +4,12 @@
 
 One of the simple things about a traditional WordPress sites is sending emails, this plugin makes it easy to do this via a simple mutation when you are using WPGraphQL.
 
+### Features
+
+- Set list of allowed origins in admin
+- Set CC address in admin
+- Set default From address in admin
+
 ## Composer
 
 ```
@@ -17,6 +23,7 @@ mutation SEND_EMAIL {
   sendEmail(
     input: {
       to: "test@test.com"
+      from: "test@test.com"
       subject: "test email"
       body: "test email"
       clientMutationId: "test"
