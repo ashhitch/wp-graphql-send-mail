@@ -197,7 +197,7 @@ add_action('graphql_register_types', function () {
       $http_origin = trim($_SERVER['HTTP_ORIGIN']);
       $message = null;
       $canSend = false;
-      $to = trim($input['to']) ? trim($input['to']) : trim($defaultTo);
+      $to = isset($input['to']) ? trim($input['to']) : trim($defaultTo);
 
       if ($allowedOrigins) {
         if (in_array($http_origin, $allowedOrigins)) {
@@ -219,19 +219,19 @@ add_action('graphql_register_types', function () {
         $from = trim($input['from']);
         $headers = array('Content-Type: text/html; charset=UTF-8');
 
-        if (isset($cc)) {
+        if (isset($cc) && !empty($cc)) {
           $headers[] = 'Cc: ' . $cc;
         }
 
-        if (isset($from)) {
+        if (isset($from) && !empty($from)) {
           $headers[] = 'From: ' . $from;
-        } else if (isset($defaultFrom)) {
+        } else if (isset($defaultFrom) && !empty($defaultFrom)) {
           $headers[] = 'From: ' . $defaultFrom;
         }
 
         $sent = wp_mail($to, $subject, $body, $headers);
 
-        $message = $sent ? __('Email Sent', 'wp-graphql-send-mail') : __('Email Not Sent', 'wp-graphql-send-mail');
+        $message = $sent ? __('Email Sent', 'wp-graphql-send-mail') : __('Email failed to send', 'wp-graphql-send-mail');
       } else {
         $sent = false;
         $message =  $message ? $message : __('Email Not Sent', 'wp-graphql-send-mail');
