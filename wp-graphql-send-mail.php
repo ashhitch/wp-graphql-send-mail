@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Plugin Name:     WPGraphql Send Mail
+ * Plugin Name:     Add WPGraphql Send Mail
  * Plugin URI:      https://github.com/ashhitch/wp-graphql-send-mail
  * Description:     A WPGraphQL Extension that adds support for Sending Mail vi a mutation
  * Author:          Ash Hitchcock
  * Author URI:      https://www.ashleyhitchcock.com
  * Text Domain:     wp-graphql-send-mail
  * Domain Path:     /languages
- * Version:         1.0.0
+ * Version:         1.1.0
  *
  * @package         WP_Graphql_SEND_MAIL
  */
@@ -50,6 +50,14 @@ function wpgraphql_send_mail_settings_init()
   );
 
   add_settings_field(
+    'wpgraphql_send_mail_to',
+    __('Default To address', 'wp-graphql-send-mail'),
+    'wpgraphql_send_mail_to_render',
+    'wsmPlugin',
+    'wpgraphql_send_mail_wsmPlugin_section'
+  );
+
+  add_settings_field(
     'wpgraphql_send_mail_from',
     __('Default From address', 'wp-graphql-send-mail'),
     'wpgraphql_send_mail_from_render',
@@ -62,9 +70,7 @@ function wpgraphql_send_mail_origins_textarea_render()
 {
   $options = get_option('wpgraphql_send_mail_settings');
 ?>
-  <textarea rows="6" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_allowed_origins]'>
-    <?php echo isset($options['wpgraphql_send_mail_allowed_origins']) ? trim($options['wpgraphql_send_mail_allowed_origins']) : ''; ?>
-  </textarea>
+  <textarea rows="6" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_allowed_origins]'><?php echo isset($options['wpgraphql_send_mail_allowed_origins']) ? trim($options['wpgraphql_send_mail_allowed_origins']) : ''; ?></textarea>
 <?php
 }
 
@@ -73,6 +79,13 @@ function wpgraphql_send_mail_cc_render()
   $options = get_option('wpgraphql_send_mail_settings');
 ?>
   <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_cc]' value="<?php echo isset($options['wpgraphql_send_mail_cc']) ? trim($options['wpgraphql_send_mail_cc']) : ''; ?>" />
+<?php
+}
+function wpgraphql_send_mail_to_render()
+{
+  $options = get_option('wpgraphql_send_mail_settings');
+?>
+  <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_to]' value="<?php echo isset($options['wpgraphql_send_mail_to']) ? trim($options['wpgraphql_send_mail_to']) : ''; ?>" />
 <?php
 }
 
@@ -173,25 +186,27 @@ add_action('graphql_register_types', function () {
       $allowedOrigins = array_map('trim', explode(',', $options['wpgraphql_send_mail_allowed_origins']));
       $cc = trim($options['wpgraphql_send_mail_cc']);
       $defaultFrom = trim($options['wpgraphql_send_mail_from']);
+      $defaultTo = trim($options['wpgraphql_send_mail_to']);
       $http_origin = trim($_SERVER['HTTP_ORIGIN']);
       $message = null;
       $canSend = false;
-
+      $to = trim($input['to']) ? trim($input['to']) : trim($defaultTo);
 
       if ($allowedOrigins) {
         if (in_array($http_origin, $allowedOrigins)) {
           $canSend = true;
         } else {
-          $message = __('Origin not allowed', 'wp-graphql-send-mail');
+          $message = __('Origin not allowed, set origin in settings', 'wp-graphql-send-mail');
         }
       } else {
         // if they did not enter any then we will allow any
         $canSend = true;
       }
 
-      if ($canSend && !empty($input['to']) && !empty($input['body'])) {
+      // Above tests passed and there is a to address and an email body
+      if ($canSend && !empty($to)  && !empty($input['body'])) {
 
-        $to = trim($input['to']);
+
         $subject = trim($input['subject']);
         $body = $input['body'];
         $from = trim($input['from']);
