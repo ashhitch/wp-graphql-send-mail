@@ -168,6 +168,13 @@ add_action('graphql_register_types', function () {
           return isset($payload['origin']) ? $payload['origin'] : null;
         }
       ],
+      'to' => [
+        'type' => 'String',
+        'description' => __('Who the email got sent to', 'wp-graphql-send-mail'),
+        'resolve' => function ($payload, $args, $context, $info) {
+          return isset($payload['to']) ? $payload['to'] : null;
+        }
+      ],
       'message' => [
         'type' => 'String',
         'description' => __('Message', 'wp-graphql-send-mail'),
@@ -233,6 +240,7 @@ add_action('graphql_register_types', function () {
       return [
         'sent' => $sent,
         'origin' => $http_origin,
+        'to' => $to,
         'message' => $message,
       ];
     }
