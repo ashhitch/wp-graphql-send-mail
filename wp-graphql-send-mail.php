@@ -8,7 +8,7 @@
  * Author URI:      https://www.ashleyhitchcock.com
  * Text Domain:     wp-graphql-send-mail
  * Domain Path:     /languages
- * Version:         1.1.0
+ * Version:         1.2.0
  *
  * @package         WP_Graphql_SEND_MAIL
  */
@@ -140,6 +140,10 @@ add_action('graphql_register_types', function () {
         'type' => 'String',
         'description' => __('Who to send the email from', 'wp-graphql-send-mail'),
       ],
+      'replyTo' => [
+        'type' => 'String',
+        'description' => __('Reply to address', 'wp-graphql-send-mail'),
+      ],
       'subject' => [
         'type' => 'String',
         'description' => __('Subject of email', 'wp-graphql-send-mail'),
@@ -175,6 +179,13 @@ add_action('graphql_register_types', function () {
           return isset($payload['to']) ? $payload['to'] : null;
         }
       ],
+      'replyTo' => [
+        'type' => 'String',
+        'description' => __('reply To address used', 'wp-graphql-send-mail'),
+        'resolve' => function ($payload, $args, $context, $info) {
+          return isset($payload['replyTo']) ? $payload['replyTo'] : null;
+        }
+      ],
       'message' => [
         'type' => 'String',
         'description' => __('Message', 'wp-graphql-send-mail'),
@@ -198,6 +209,7 @@ add_action('graphql_register_types', function () {
       $message = null;
       $canSend = false;
       $to = isset($input['to']) ? trim($input['to']) : trim($defaultTo);
+      $replyTo = trim($input['replyTo']) ;
 
       if ($allowedOrigins) {
         if (in_array($http_origin, $allowedOrigins)) {
@@ -223,6 +235,11 @@ add_action('graphql_register_types', function () {
           $headers[] = 'Cc: ' . $cc;
         }
 
+        if (isset($replyTo) && !empty($replyTo)) {
+          $headers[] = 'Reply-To: ' . $replyTo;
+        }
+   
+
         if (isset($from) && !empty($from)) {
           $headers[] = 'From: ' . $from;
         } else if (isset($defaultFrom) && !empty($defaultFrom)) {
@@ -241,6 +258,7 @@ add_action('graphql_register_types', function () {
         'sent' => $sent,
         'origin' => $http_origin,
         'to' => $to,
+        'replyTo' => $replyTo,
         'message' => $message,
       ];
     }
