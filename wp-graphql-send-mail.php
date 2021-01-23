@@ -3,7 +3,7 @@
 /**
  * Plugin Name:     Add WPGraphql Send Mail
  * Plugin URI:      https://github.com/ashhitch/wp-graphql-send-mail
- * Description:     A WPGraphQL Extension that adds support for Sending Mail vi a mutation
+ * Description:     A WPGraphQL Extension that adds support for Sending Mail via a mutation
  * Author:          Ash Hitchcock
  * Author URI:      https://www.ashleyhitchcock.com
  * Text Domain:     wp-graphql-send-mail
