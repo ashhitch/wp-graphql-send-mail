@@ -8,7 +8,7 @@
  * Author URI:      https://www.ashleyhitchcock.com
  * Text Domain:     wp-graphql-send-mail
  * Domain Path:     /languages
- * Version:         1.2.0
+ * Version:         1.3.0
  *
  * @package         WP_Graphql_SEND_MAIL
  */
@@ -64,13 +64,21 @@ function wpgraphql_send_mail_settings_init()
     'wsmPlugin',
     'wpgraphql_send_mail_wsmPlugin_section'
   );
+
+  add_settings_field(
+    'wpgraphql_send_mail_headers',
+    __('Email Headers', 'wp-graphql-send-mail'),
+    'wpgraphql_send_mail_headers_textarea_render',
+    'wsmPlugin',
+    'wpgraphql_send_mail_wsmPlugin_section'
+  );
 }
 
 function wpgraphql_send_mail_origins_textarea_render()
 {
   $options = get_option('wpgraphql_send_mail_settings');
 ?>
-  <textarea rows="6" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_allowed_origins]'><?php echo isset($options['wpgraphql_send_mail_allowed_origins']) ? trim($options['wpgraphql_send_mail_allowed_origins']) : ''; ?></textarea>
+  <textarea rows="6" cols="36" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_allowed_origins]'><?php echo isset($options['wpgraphql_send_mail_allowed_origins']) ? trim($options['wpgraphql_send_mail_allowed_origins']) : ''; ?></textarea>
 <?php
 }
 
@@ -94,6 +102,14 @@ function wpgraphql_send_mail_from_render()
   $options = get_option('wpgraphql_send_mail_settings');
 ?>
   <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_from]' value="<?php echo isset($options['wpgraphql_send_mail_from']) ? trim($options['wpgraphql_send_mail_from']) : ''; ?>" />
+<?php
+}
+
+function wpgraphql_send_mail_headers_textarea_render()
+{
+  $options = get_option('wpgraphql_send_mail_settings');
+?>
+  <textarea rows="6" cols="36" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_headers]'><?php echo isset($options['wpgraphql_send_mail_headers']) ? trim($options['wpgraphql_send_mail_headers']) : ''; ?></textarea>
 <?php
 }
 
@@ -152,6 +168,10 @@ add_action('graphql_register_types', function () {
         'type' => 'String',
         'description' => __('Body of email', 'wp-graphql-send-mail'),
       ],
+      'headers' => [
+        'type' => 'String',
+        'description' => __('Email headers', 'wp-graphql-send-mail')
+      ]
     ],
 
     # outputFields expects an array of fields that can be asked for in response to the mutation
@@ -202,6 +222,7 @@ add_action('graphql_register_types', function () {
       // Do any logic here to sanitize the input, check user capabilities, etc
       $options = get_option('wpgraphql_send_mail_settings');
       $allowedOrigins = array_map('trim', explode(',', $options['wpgraphql_send_mail_allowed_origins']));
+      $customHeaders = array_map('trim', explode(',', $options['wpgraphql_send_mail_headers']));
       $cc = trim($options['wpgraphql_send_mail_cc']);
       $defaultFrom = trim($options['wpgraphql_send_mail_from']);
       $defaultTo = trim($options['wpgraphql_send_mail_to']);
@@ -230,6 +251,9 @@ add_action('graphql_register_types', function () {
         $body = $input['body'];
         $from = trim($input['from']);
         $headers = array('Content-Type: text/html; charset=UTF-8');
+        if($customHeaders) {
+            $headers = array_merge($headers, $customHeaders);
+        }
 
         if (isset($cc) && !empty($cc)) {
           $headers[] = 'Cc: ' . $cc;
