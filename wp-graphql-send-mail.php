@@ -78,7 +78,7 @@ function wpgraphql_send_mail_cc_render()
 {
   $options = get_option('wpgraphql_send_mail_settings');
 ?>
-  <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_cc]' value="<?php echo isset($options['wpgraphql_send_mail_cc']) ? trim($options['wpgraphql_send_mail_cc']) : ''; ?>" />
+  <textarea rows="6" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_cc]'><?php echo isset($options['wpgraphql_send_mail_cc']) ? trim($options['wpgraphql_send_mail_cc']) : ''; ?></textarea>
 <?php
 }
 function wpgraphql_send_mail_to_render()
@@ -136,6 +136,10 @@ add_action('graphql_register_types', function () {
         'type' => 'String',
         'description' => __('Who to send the email to', 'wp-graphql-send-mail'),
       ],
+      'cc' => [
+        'type' => 'String',
+        'description' => __('Add carbon copy for secondary recipient.', 'wp-graphql-send-mail'),
+      ],
       'from' => [
         'type' => 'String',
         'description' => __('Who to send the email from', 'wp-graphql-send-mail'),
@@ -177,6 +181,13 @@ add_action('graphql_register_types', function () {
         'description' => __('Who the email got sent to', 'wp-graphql-send-mail'),
         'resolve' => function ($payload, $args, $context, $info) {
           return isset($payload['to']) ? $payload['to'] : null;
+        }
+      ],
+      'cc' => [
+        'type' => 'String',
+        'description' => __('Add carbon copy for secondary recipient.', 'wp-graphql-send-mail'),
+        'resolve' => function ($payload, $args, $context, $info) {
+          return isset($payload['cc']) ? $payload['cc'] : null;
         }
       ],
       'replyTo' => [
