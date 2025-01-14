@@ -50,3 +50,8 @@ These are set under `Settings > WPGraphQL Mail` from your WordPress Admin
 Want to get Yoast data via WPGraphQL? [Checkout my other plugin](https://github.com/ashhitch/wp-graphql-yoast-seo)
 
 Mail Icon by [Good Ware](https://www.flaticon.com/authors/good-ware)
+
+## Find this useful?
+
+<a href="https://www.buymeacoffee.com/ashhitch" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png" alt="Buy Me A Coffee" style="height: 40px !important;width: auto !important;" ></a>
+
