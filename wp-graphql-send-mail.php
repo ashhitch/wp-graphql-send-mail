@@ -6,9 +6,10 @@
  * Description:     A WPGraphQL Extension that adds support for Sending Mail via a mutation
  * Author:          Ash Hitchcock
  * Author URI:      https://www.ashleyhitchcock.com
- * Text Domain:     wp-graphql-send-mail
- * Domain Path:     /languages
- * Version:         1.2.0
+ * Text Domain:     add-wpgraphql-send-mail
+ * Version:         1.3.0
+ * License:         GPLv2 or later
+ * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
  * @package         WP_Graphql_SEND_MAIL
  */
@@ -28,14 +29,14 @@ function wpgraphql_send_mail_settings_init()
   register_setting('wsmPlugin', 'wpgraphql_send_mail_settings');
   add_settings_section(
     'wpgraphql_send_mail_wsmPlugin_section',
-    __('Security', 'wp-graphql-send-mail'),
+    __('Security', 'add-wpgraphql-send-mail'),
     'wpgraphql_send_mail_settings_section_callback',
     'wsmPlugin'
   );
 
   add_settings_field(
     'wpgraphql_send_mail_allowed_origins',
-    __('Allowed Origins', 'wp-graphql-send-mail'),
+    __('Allowed Origins', 'add-wpgraphql-send-mail'),
     'wpgraphql_send_mail_origins_textarea_render',
     'wsmPlugin',
     'wpgraphql_send_mail_wsmPlugin_section'
@@ -43,7 +44,7 @@ function wpgraphql_send_mail_settings_init()
 
   add_settings_field(
     'wpgraphql_send_mail_cc',
-    __('CC address', 'wp-graphql-send-mail'),
+    __('CC address', 'add-wpgraphql-send-mail'),
     'wpgraphql_send_mail_cc_render',
     'wsmPlugin',
     'wpgraphql_send_mail_wsmPlugin_section'
@@ -51,7 +52,7 @@ function wpgraphql_send_mail_settings_init()
 
   add_settings_field(
     'wpgraphql_send_mail_to',
-    __('Default To address', 'wp-graphql-send-mail'),
+    __('Default To address', 'add-wpgraphql-send-mail'),
     'wpgraphql_send_mail_to_render',
     'wsmPlugin',
     'wpgraphql_send_mail_wsmPlugin_section'
@@ -59,7 +60,7 @@ function wpgraphql_send_mail_settings_init()
 
   add_settings_field(
     'wpgraphql_send_mail_from',
-    __('Default From address', 'wp-graphql-send-mail'),
+    __('Default From address', 'add-wpgraphql-send-mail'),
     'wpgraphql_send_mail_from_render',
     'wsmPlugin',
     'wpgraphql_send_mail_wsmPlugin_section'
@@ -100,7 +101,7 @@ function wpgraphql_send_mail_from_render()
 
 function wpgraphql_send_mail_settings_section_callback()
 {
-  echo __('Enter a comma separated list of domains that can send emails, remembering to include the protocol e.g. https://wordpress.com', 'wp-graphql-send-mail');
+  echo __('Enter a comma separated list of domains that can send emails, remembering to include the protocol e.g. https://wordpress.com', 'add-wpgraphql-send-mail');
 }
 
 function wpgraphql_send_mail_options_page()
@@ -134,23 +135,23 @@ add_action('graphql_register_types', function () {
     'inputFields'         => [
       'to' => [
         'type' => 'String',
-        'description' => __('Who to send the email to', 'wp-graphql-send-mail'),
+        'description' => __('Who to send the email to', 'add-wpgraphql-send-mail'),
       ],
       'from' => [
         'type' => 'String',
-        'description' => __('Who to send the email from', 'wp-graphql-send-mail'),
+        'description' => __('Who to send the email from', 'add-wpgraphql-send-mail'),
       ],
       'replyTo' => [
         'type' => 'String',
-        'description' => __('Reply to address', 'wp-graphql-send-mail'),
+        'description' => __('Reply to address', 'add-wpgraphql-send-mail'),
       ],
       'subject' => [
         'type' => 'String',
-        'description' => __('Subject of email', 'wp-graphql-send-mail'),
+        'description' => __('Subject of email', 'add-wpgraphql-send-mail'),
       ],
       'body' => [
         'type' => 'String',
-        'description' => __('Body of email', 'wp-graphql-send-mail'),
+        'description' => __('Body of email', 'add-wpgraphql-send-mail'),
       ],
     ],
 
@@ -160,35 +161,35 @@ add_action('graphql_register_types', function () {
     'outputFields'        => [
       'sent' => [
         'type' => 'Boolean',
-        'description' => __('Was the email sent', 'wp-graphql-send-mail'),
+        'description' => __('Was the email sent', 'add-wpgraphql-send-mail'),
         'resolve' => function ($payload, $args, $context, $info) {
           return isset($payload['sent']) ? $payload['sent'] : null;
         }
       ],
       'origin' => [
         'type' => 'String',
-        'description' => __('Origin that sent the request', 'wp-graphql-send-mail'),
+        'description' => __('Origin that sent the request', 'add-wpgraphql-send-mail'),
         'resolve' => function ($payload, $args, $context, $info) {
           return isset($payload['origin']) ? $payload['origin'] : null;
         }
       ],
       'to' => [
         'type' => 'String',
-        'description' => __('Who the email got sent to', 'wp-graphql-send-mail'),
+        'description' => __('Who the email got sent to', 'add-wpgraphql-send-mail'),
         'resolve' => function ($payload, $args, $context, $info) {
           return isset($payload['to']) ? $payload['to'] : null;
         }
       ],
       'replyTo' => [
         'type' => 'String',
-        'description' => __('reply To address used', 'wp-graphql-send-mail'),
+        'description' => __('reply To address used', 'add-wpgraphql-send-mail'),
         'resolve' => function ($payload, $args, $context, $info) {
           return isset($payload['replyTo']) ? $payload['replyTo'] : null;
         }
       ],
       'message' => [
         'type' => 'String',
-        'description' => __('Message', 'wp-graphql-send-mail'),
+        'description' => __('Message', 'add-wpgraphql-send-mail'),
         'resolve' => function ($payload, $args, $context, $info) {
           return isset($payload['message']) ? $payload['message'] : null;
         }
@@ -215,7 +216,7 @@ add_action('graphql_register_types', function () {
         if (in_array($http_origin, $allowedOrigins)) {
           $canSend = true;
         } else {
-          $message = __('Origin not allowed, set origin in settings', 'wp-graphql-send-mail');
+          $message = __('Origin not allowed, set origin in settings', 'add-wpgraphql-send-mail');
         }
       } else {
         // if they did not enter any then we will allow any
@@ -248,10 +249,10 @@ add_action('graphql_register_types', function () {
 
         $sent = wp_mail($to, $subject, $body, $headers);
 
-        $message = $sent ? __('Email Sent', 'wp-graphql-send-mail') : __('Email failed to send', 'wp-graphql-send-mail');
+        $message = $sent ? __('Email Sent', 'add-wpgraphql-send-mail') : __('Email failed to send', 'add-wpgraphql-send-mail');
       } else {
         $sent = false;
-        $message =  $message ? $message : __('Email Not Sent', 'wp-graphql-send-mail');
+        $message =  $message ? $message : __('Email Not Sent', 'add-wpgraphql-send-mail');
       }
 
       return [

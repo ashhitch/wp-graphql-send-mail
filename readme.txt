@@ -1,11 +1,11 @@
 === WPGraphQL Send Mail ===
 
 Contributors: ash_hitch
-Tags: Mail, WPGraphQL, GraphQL, Headless WordPress, Decoupled WordPress, JAMStack
+Tags: Mail, WPGraphQL, GraphQL, Headless WordPress, JAMStack
 Requires at least: 5.0
-Tested up to: 5.6
+Tested up to: 6.9
 Requires PHP: 7.0
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
