@@ -7,7 +7,7 @@
  * Author:          Ash Hitchcock
  * Author URI:      https://www.ashleyhitchcock.com
  * Text Domain:     add-wpgraphql-send-mail
- * Version:         1.3.0
+ * Version:         1.4.0
  * License:         GPLv2 or later
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
