@@ -26,7 +26,13 @@ function wpgraphql_send_mail_add_admin_menu()
 
 function wpgraphql_send_mail_settings_init()
 {
-  register_setting('wsmPlugin', 'wpgraphql_send_mail_settings');
+  register_setting(
+    'wsmPlugin',
+    'wpgraphql_send_mail_settings',
+    array(
+      'sanitize_callback' => 'wpgraphql_send_mail_sanitize_settings',
+    )
+  );
   add_settings_section(
     'wpgraphql_send_mail_wsmPlugin_section',
     __('Security', 'add-wpgraphql-send-mail'),
@@ -67,11 +73,33 @@ function wpgraphql_send_mail_settings_init()
   );
 }
 
+function wpgraphql_send_mail_sanitize_settings($input) {
+  $sanitized = array();
+  
+  if (isset($input['wpgraphql_send_mail_allowed_origins'])) {
+    $sanitized['wpgraphql_send_mail_allowed_origins'] = sanitize_text_field($input['wpgraphql_send_mail_allowed_origins']);
+  }
+  
+  if (isset($input['wpgraphql_send_mail_cc'])) {
+    $sanitized['wpgraphql_send_mail_cc'] = sanitize_email($input['wpgraphql_send_mail_cc']);
+  }
+  
+  if (isset($input['wpgraphql_send_mail_to'])) {
+    $sanitized['wpgraphql_send_mail_to'] = sanitize_email($input['wpgraphql_send_mail_to']);
+  }
+  
+  if (isset($input['wpgraphql_send_mail_from'])) {
+    $sanitized['wpgraphql_send_mail_from'] = sanitize_email($input['wpgraphql_send_mail_from']);
+  }
+  
+  return $sanitized;
+}
+
 function wpgraphql_send_mail_origins_textarea_render()
 {
   $options = get_option('wpgraphql_send_mail_settings');
 ?>
-  <textarea rows="6" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_allowed_origins]'><?php echo isset($options['wpgraphql_send_mail_allowed_origins']) ? trim($options['wpgraphql_send_mail_allowed_origins']) : ''; ?></textarea>
+  <textarea rows="6" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_allowed_origins]'><?php echo esc_textarea(isset($options['wpgraphql_send_mail_allowed_origins']) ? trim($options['wpgraphql_send_mail_allowed_origins']) : ''); ?></textarea>
 <?php
 }
 
@@ -79,14 +107,14 @@ function wpgraphql_send_mail_cc_render()
 {
   $options = get_option('wpgraphql_send_mail_settings');
 ?>
-  <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_cc]' value="<?php echo isset($options['wpgraphql_send_mail_cc']) ? trim($options['wpgraphql_send_mail_cc']) : ''; ?>" />
+  <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_cc]' value="<?php echo esc_attr(isset($options['wpgraphql_send_mail_cc']) ? trim($options['wpgraphql_send_mail_cc']) : ''); ?>" />
 <?php
 }
 function wpgraphql_send_mail_to_render()
 {
   $options = get_option('wpgraphql_send_mail_settings');
 ?>
-  <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_to]' value="<?php echo isset($options['wpgraphql_send_mail_to']) ? trim($options['wpgraphql_send_mail_to']) : ''; ?>" />
+  <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_to]' value="<?php echo esc_attr(isset($options['wpgraphql_send_mail_to']) ? trim($options['wpgraphql_send_mail_to']) : ''); ?>" />
 <?php
 }
 
@@ -94,14 +122,14 @@ function wpgraphql_send_mail_from_render()
 {
   $options = get_option('wpgraphql_send_mail_settings');
 ?>
-  <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_from]' value="<?php echo isset($options['wpgraphql_send_mail_from']) ? trim($options['wpgraphql_send_mail_from']) : ''; ?>" />
+  <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_from]' value="<?php echo esc_attr(isset($options['wpgraphql_send_mail_from']) ? trim($options['wpgraphql_send_mail_from']) : ''); ?>" />
 <?php
 }
 
 
 function wpgraphql_send_mail_settings_section_callback()
 {
-  echo __('Enter a comma separated list of domains that can send emails, remembering to include the protocol e.g. https://wordpress.com', 'add-wpgraphql-send-mail');
+  echo esc_html__('Enter a comma separated list of domains that can send emails, remembering to include the protocol e.g. https://wordpress.com', 'add-wpgraphql-send-mail');
 }
 
 function wpgraphql_send_mail_options_page()
