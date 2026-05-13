@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Author:          Ash Hitchcock
  * Author URI:      https://www.ashleyhitchcock.com
  * Text Domain:     add-wpgraphql-send-mail
- * Version:         1.5.1
+ * Version:         1.6.1
  * License:         GPLv2 or later
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
