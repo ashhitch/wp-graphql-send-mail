@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 /**
  * Plugin Name:     Add WPGraphql Send Mail
@@ -7,7 +8,7 @@
  * Author:          Ash Hitchcock
  * Author URI:      https://www.ashleyhitchcock.com
  * Text Domain:     add-wpgraphql-send-mail
- * Version:         1.4.0
+ * Version:         1.5.0
  * License:         GPLv2 or later
  * License URI:     https://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -234,7 +235,7 @@ add_action('graphql_register_types', function () {
       $cc = trim($options['wpgraphql_send_mail_cc']);
       $defaultFrom = trim($options['wpgraphql_send_mail_from']);
       $defaultTo = trim($options['wpgraphql_send_mail_to']);
-      $http_origin = trim($_SERVER['HTTP_ORIGIN']);
+      $http_origin = isset( $_SERVER['HTTP_ORIGIN'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_ORIGIN'] ) ) : '';
       $message = null;
       $canSend = false;
       $to = isset($input['to']) ? trim($input['to']) : trim($defaultTo);
