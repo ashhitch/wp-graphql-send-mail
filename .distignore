@@ -2,6 +2,7 @@
 /.github
 /node_modules
 /vendor
+/assets
 .prettierrc
 .distignore
 .gitignore
