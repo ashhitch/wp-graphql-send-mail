@@ -72,6 +72,14 @@ function wpgraphql_send_mail_settings_init()
     'wsmPlugin',
     'wpgraphql_send_mail_wsmPlugin_section'
   );
+
+  add_settings_field(
+    'wpgraphql_send_mail_require_auth',
+    __('Require Authentication', 'add-wpgraphql-send-mail'),
+    'wpgraphql_send_mail_require_auth_render',
+    'wsmPlugin',
+    'wpgraphql_send_mail_wsmPlugin_section'
+  );
 }
 
 function wpgraphql_send_mail_sanitize_settings($input) {
@@ -91,6 +99,10 @@ function wpgraphql_send_mail_sanitize_settings($input) {
   
   if (isset($input['wpgraphql_send_mail_from'])) {
     $sanitized['wpgraphql_send_mail_from'] = sanitize_email($input['wpgraphql_send_mail_from']);
+  }
+
+  if (isset($input['wpgraphql_send_mail_require_auth'])) {
+    $sanitized['wpgraphql_send_mail_require_auth'] = '1' === $input['wpgraphql_send_mail_require_auth'];
   }
   
   return $sanitized;
@@ -124,6 +136,18 @@ function wpgraphql_send_mail_from_render()
   $options = get_option('wpgraphql_send_mail_settings');
 ?>
   <input type="email" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_from]' value="<?php echo esc_attr(isset($options['wpgraphql_send_mail_from']) ? trim($options['wpgraphql_send_mail_from']) : ''); ?>" />
+<?php
+}
+
+function wpgraphql_send_mail_require_auth_render()
+{
+  $options = get_option('wpgraphql_send_mail_settings');
+  $checked = isset($options['wpgraphql_send_mail_require_auth']) ? $options['wpgraphql_send_mail_require_auth'] : false;
+?>
+  <label>
+    <input type="checkbox" name='wpgraphql_send_mail_settings[wpgraphql_send_mail_require_auth]' value="1" <?php checked($checked); ?> />
+    <?php esc_html_e('Require the request to be authenticated', 'add-wpgraphql-send-mail'); ?>
+  </label>
 <?php
 }
 
@@ -240,6 +264,16 @@ add_action('graphql_register_types', function () {
       $canSend = false;
       $to = isset($input['to']) ? trim($input['to']) : trim($defaultTo);
       $replyTo = trim($input['replyTo']) ;
+
+      if (isset($options['wpgraphql_send_mail_require_auth']) && $options['wpgraphql_send_mail_require_auth'] && !is_user_logged_in()) {
+        return [
+          'sent' => false,
+          'origin' => $http_origin,
+          'to' => $to,
+          'replyTo' => $replyTo,
+          'message' => __('Authentication required', 'add-wpgraphql-send-mail'),
+        ];
+      }
 
       if ($allowedOrigins) {
         if (in_array($http_origin, $allowedOrigins)) {
